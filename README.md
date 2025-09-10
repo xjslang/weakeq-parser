@@ -1,17 +1,19 @@
-El parser **XJS** no soporta los operadores `===/!==` y transforma los operadores `==/!=` a `===/!===`. Este plugin añade soporte a la desigualdad débil, transformando `~~/!~` a `==/!=`.
+# Weak Equality Parser Plugin for XJS
 
-Por ejemplo:
+The **XJS** parser does not support the `===` or `!==` operators and automatically transforms `==` and `!=` into `===` and `!==`. This plugin adds support for weak equality by converting `~~` and `!~` into `==` and `!=`, respectively.
+
+**Examples:**
 
 ```js
-a == b // se traduce a `a === b`
-a != b // se traduce a `a !== b`
-a === b // error! para XJS todas las comparaciones son estrictas y no entiende esto
-a !== b // error! para XJS todas las comparaciones son estrictas y no entiende esto
+a == b   // Translated to: a === b
+a != b   // Translated to: a !== b
+a === b  // Error! XJS only supports strict comparisons.
+a !== b  // Error! XJS only supports strict comparisons.
 ```
 
-Mediante este plugin podemos "enriquecer" el parser y escribir:
+With this plugin, you can extend the parser to write:
 
 ```js
-a ~~ b // se traduce a `a == b`
-a !~ b // se traduce a `a != b`
+a ~~ b   // Translated to: a == b
+a !~ b   // Translated to: a != b
 ```
