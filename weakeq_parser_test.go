@@ -42,7 +42,10 @@ func TestWeakEqualityBasic(t *testing.T) {
 			p := parser.New(l)
 			p.UseExpressionParser(ParseWeakEqExpression)
 
-			program := p.ParseProgram()
+			program, err := p.ParseProgram()
+			if err != nil {
+				t.Fatalf("ParseProgram() error: %v", err)
+			}
 			if program == nil {
 				t.Fatalf("ParseProgram() returned nil")
 			}
@@ -89,7 +92,10 @@ func TestWeakEqualityWithDifferentTypes(t *testing.T) {
 			p := parser.New(l)
 			p.UseExpressionParser(ParseWeakEqExpression)
 
-			program := p.ParseProgram()
+			program, err := p.ParseProgram()
+			if err != nil {
+				t.Fatalf("ParseProgram() error: %v", err)
+			}
 			if program == nil {
 				t.Fatalf("ParseProgram() returned nil")
 			}
@@ -136,7 +142,10 @@ func TestWeakEqualityComplexExpressions(t *testing.T) {
 			p := parser.New(l)
 			p.UseExpressionParser(ParseWeakEqExpression)
 
-			program := p.ParseProgram()
+			program, err := p.ParseProgram()
+			if err != nil {
+				t.Fatalf("ParseProgram() error: %v", err)
+			}
 			if program == nil {
 				t.Fatalf("ParseProgram() returned nil")
 			}
@@ -178,7 +187,10 @@ func TestWeakEqualityEdgeCases(t *testing.T) {
 			p := parser.New(l)
 			p.UseExpressionParser(ParseWeakEqExpression)
 
-			program := p.ParseProgram()
+			program, err := p.ParseProgram()
+			if err != nil {
+				t.Fatalf("ParseProgram() error: %v", err)
+			}
 			if program == nil {
 				t.Fatalf("ParseProgram() returned nil")
 			}
@@ -215,7 +227,10 @@ func TestWeakEqualityMixedWithStrictEquality(t *testing.T) {
 			p := parser.New(l)
 			p.UseExpressionParser(ParseWeakEqExpression)
 
-			program := p.ParseProgram()
+			program, err := p.ParseProgram()
+			if err != nil {
+				t.Fatalf("ParseProgram() error: %v", err)
+			}
 			if program == nil {
 				t.Fatalf("ParseProgram() returned nil")
 			}
@@ -233,7 +248,10 @@ func Example_complexExpressions() {
 	l := lexer.New(input)
 	p := parser.New(l)
 	p.UseExpressionParser(ParseWeakEqExpression)
-	ast := p.ParseProgram()
+	ast, err := p.ParseProgram()
+	if err != nil {
+		panic(fmt.Sprintf("ParseProgram() error: %v\n", err))
+	}
 	fmt.Println(ast.String())
 	// Output: let result=(((x==5)&&(y!=0))||(name=="John"))
 }
@@ -243,7 +261,10 @@ func Example_simpleComparison() {
 	l := lexer.New(input)
 	p := parser.New(l)
 	p.UseExpressionParser(ParseWeakEqExpression)
-	ast := p.ParseProgram()
+	ast, err := p.ParseProgram()
+	if err != nil {
+		panic(fmt.Sprintf("ParseProgram() error: %v\n", err))
+	}
 	fmt.Println(ast.String())
 	// Output: let isEqual=(a==b);let isNotEqual=(c!=d)
 }
