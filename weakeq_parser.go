@@ -35,7 +35,9 @@ func ParseWeakEqExpression(p *parser.Parser, next func() ast.Expression) ast.Exp
 		operator := p.PeekToken.Literal + "~"
 		left := p.ParsePrefixExpression()
 		p.NextToken() // consume ~ or !
-		p.NextToken() // consume ~
+		if !p.ExpectLiteral("~") {
+			return nil
+		}
 		p.NextToken() // move to right expression
 		return p.ParseRemainingExpression(&WeakEqExpression{
 			Left:     left,
