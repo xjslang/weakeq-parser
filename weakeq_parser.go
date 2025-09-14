@@ -51,15 +51,11 @@ func InstallPlugin(p *parser.Parser) {
 		return next()
 	})
 
-	p.RegisterInfixOperator(eqTokenType, parser.EQUALITY, func(left ast.Expression, right func() ast.Expression) ast.Expression {
-		operator := "~~"
-		if p.CurrentToken.Literal == "!~" {
-			operator = "!~"
-		}
+	p.RegisterInfixOperator(eqTokenType, parser.EQUALITY, func(token token.Token, left ast.Expression, right func() ast.Expression) ast.Expression {
 		return &WeakEqExpression{
-			Token:    p.CurrentToken,
+			Token:    token,
 			Left:     left,
-			Operator: operator,
+			Operator: token.Literal,
 			Right:    right(),
 		}
 	})
