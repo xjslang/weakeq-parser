@@ -40,7 +40,7 @@ func TestWeakEqualityBasic(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			l := lexer.New(tt.input)
 			p := parser.New(l)
-			p.UseExpressionParser(ParseWeakEqExpression)
+			InstallPlugin(p)
 
 			program, err := p.ParseProgram()
 			if err != nil {
@@ -90,7 +90,7 @@ func TestWeakEqualityWithDifferentTypes(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			l := lexer.New(tt.input)
 			p := parser.New(l)
-			p.UseExpressionParser(ParseWeakEqExpression)
+			InstallPlugin(p)
 
 			program, err := p.ParseProgram()
 			if err != nil {
@@ -140,7 +140,7 @@ func TestWeakEqualityComplexExpressions(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			l := lexer.New(tt.input)
 			p := parser.New(l)
-			p.UseExpressionParser(ParseWeakEqExpression)
+			InstallPlugin(p)
 
 			program, err := p.ParseProgram()
 			if err != nil {
@@ -185,7 +185,7 @@ func TestWeakEqualityEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			l := lexer.New(tt.input)
 			p := parser.New(l)
-			p.UseExpressionParser(ParseWeakEqExpression)
+			InstallPlugin(p)
 
 			program, err := p.ParseProgram()
 			if err != nil {
@@ -225,7 +225,7 @@ func TestWeakEqualityMixedWithStrictEquality(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			l := lexer.New(tt.input)
 			p := parser.New(l)
-			p.UseExpressionParser(ParseWeakEqExpression)
+			InstallPlugin(p)
 
 			program, err := p.ParseProgram()
 			if err != nil {
@@ -247,7 +247,7 @@ func Example_complexExpressions() {
 	input := `let result = (x ~~ 5) && (y !~ 0) || (name ~~ 'John')`
 	l := lexer.New(input)
 	p := parser.New(l)
-	p.UseExpressionParser(ParseWeakEqExpression)
+	InstallPlugin(p)
 	ast, err := p.ParseProgram()
 	if err != nil {
 		panic(fmt.Sprintf("ParseProgram() error: %v\n", err))
@@ -260,7 +260,7 @@ func Example_simpleComparison() {
 	input := `let isEqual = a ~~ b; let isNotEqual = c !~ d`
 	l := lexer.New(input)
 	p := parser.New(l)
-	p.UseExpressionParser(ParseWeakEqExpression)
+	InstallPlugin(p)
 	ast, err := p.ParseProgram()
 	if err != nil {
 		panic(fmt.Sprintf("ParseProgram() error: %v\n", err))

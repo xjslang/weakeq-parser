@@ -1,11 +1,12 @@
 package weakeqparser
 
 import (
-	"go/token"
 	"strings"
 
 	"github.com/xjslang/xjs/ast"
+	"github.com/xjslang/xjs/lexer"
 	"github.com/xjslang/xjs/parser"
+	"github.com/xjslang/xjs/token"
 )
 
 type WeakEqExpression struct {
@@ -30,21 +31,36 @@ func (we *WeakEqExpression) WriteTo(b *strings.Builder) {
 	b.WriteRune(')')
 }
 
-func ParseWeakEqExpression(p *parser.Parser, next func() ast.Expression) ast.Expression {
-	if p.PeekToken.Literal == "~" || p.PeekToken.Literal == "!" {
-		operator := p.PeekToken.Literal + "~"
-		left := p.ParsePrefixExpression()
-		p.NextToken() // consume ~ or !
-		if !p.ExpectLiteral("~") {
-			return nil
+func InstallPlugin(p *parser.Parser) {
+	eqTokenType := p.Lexer.RegisterTokenType("weak-eq")
+	p.Lexer.UseTokenReader(func(l *lexer.Lexer, next func() token.Token) token.Token {
+		switch l.CurrentChar {
+		case '~':
+			if l.PeekChar() == '~' {
+				l.ReadChar()
+				l.ReadChar()
+				return token.Token{Type: eqTokenType, Literal: "~~", Column: l.Column, Line: l.Line}
+			}
+		case '!':
+			if l.PeekChar() == '~' {
+				l.ReadChar()
+				l.ReadChar()
+				return token.Token{Type: eqTokenType, Literal: "!~", Column: l.Column, Line: l.Line}
+			}
 		}
-		p.NextToken() // move to right expression
-		return p.ParseRemainingExpression(&WeakEqExpression{
+		return next()
+	})
+
+	p.RegisterInfixOperator(eqTokenType, parser.EQUALITY, func(left ast.Expression, right func() ast.Expression) ast.Expression {
+		operator := "~~"
+		if p.CurrentToken.Literal == "!~" {
+			operator = "!~"
+		}
+		return &WeakEqExpression{
+			Token:    p.CurrentToken,
 			Left:     left,
 			Operator: operator,
-			Right:    p.ParseExpressionWithPrecedence(parser.EQUALITY),
-		})
-	}
-
-	return next()
+			Right:    right(),
+		}
+	})
 }
