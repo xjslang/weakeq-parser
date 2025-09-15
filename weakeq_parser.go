@@ -34,19 +34,19 @@ func (we *WeakEqExpression) WriteTo(b *strings.Builder) {
 func Plugin(pb *parser.Builder) {
 	lb := pb.LexerBuilder
 	eqTokenType := lb.RegisterTokenType("weak-eq")
-	lb.UseTokenReader(func(l *lexer.Lexer, next func() token.Token) token.Token {
-		switch l.CurrentChar {
+	lb.UseTokenReader(func(l lexer.Lexer, next func() token.Token) token.Token {
+		switch l.CurrentChar() {
 		case '~':
 			if l.PeekChar() == '~' {
 				l.ReadChar()
 				l.ReadChar()
-				return token.Token{Type: eqTokenType, Literal: "~~", Column: l.Column, Line: l.Line}
+				return token.Token{Type: eqTokenType, Literal: "~~", Column: l.Column(), Line: l.Line()}
 			}
 		case '!':
 			if l.PeekChar() == '~' {
 				l.ReadChar()
 				l.ReadChar()
-				return token.Token{Type: eqTokenType, Literal: "!~", Column: l.Column, Line: l.Line}
+				return token.Token{Type: eqTokenType, Literal: "!~", Column: l.Column(), Line: l.Line()}
 			}
 		}
 		return next()
