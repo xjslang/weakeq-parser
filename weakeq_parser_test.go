@@ -38,9 +38,8 @@ func TestWeakEqualityBasic(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l := lexer.New(tt.input)
-			p := parser.New(l)
-			InstallPlugin(p)
+			lb := lexer.NewBuilder()
+			p := parser.NewBuilder(lb).Install(Plugin).Build(tt.input)
 
 			program, err := p.ParseProgram()
 			if err != nil {
@@ -88,9 +87,8 @@ func TestWeakEqualityWithDifferentTypes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l := lexer.New(tt.input)
-			p := parser.New(l)
-			InstallPlugin(p)
+			lb := lexer.NewBuilder()
+			p := parser.NewBuilder(lb).Install(Plugin).Build(tt.input)
 
 			program, err := p.ParseProgram()
 			if err != nil {
@@ -138,9 +136,8 @@ func TestWeakEqualityComplexExpressions(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l := lexer.New(tt.input)
-			p := parser.New(l)
-			InstallPlugin(p)
+			lb := lexer.NewBuilder()
+			p := parser.NewBuilder(lb).Install(Plugin).Build(tt.input)
 
 			program, err := p.ParseProgram()
 			if err != nil {
@@ -183,9 +180,8 @@ func TestWeakEqualityEdgeCases(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l := lexer.New(tt.input)
-			p := parser.New(l)
-			InstallPlugin(p)
+			lb := lexer.NewBuilder()
+			p := parser.NewBuilder(lb).Install(Plugin).Build(tt.input)
 
 			program, err := p.ParseProgram()
 			if err != nil {
@@ -223,9 +219,8 @@ func TestWeakEqualityMixedWithStrictEquality(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l := lexer.New(tt.input)
-			p := parser.New(l)
-			InstallPlugin(p)
+			lb := lexer.NewBuilder()
+			p := parser.NewBuilder(lb).Install(Plugin).Build(tt.input)
 
 			program, err := p.ParseProgram()
 			if err != nil {
@@ -245,9 +240,8 @@ func TestWeakEqualityMixedWithStrictEquality(t *testing.T) {
 
 func Example_complexExpressions() {
 	input := `let result = (x ~~ 5) && (y !~ 0) || (name ~~ 'John')`
-	l := lexer.New(input)
-	p := parser.New(l)
-	InstallPlugin(p)
+	lb := lexer.NewBuilder()
+	p := parser.NewBuilder(lb).Install(Plugin).Build(input)
 	ast, err := p.ParseProgram()
 	if err != nil {
 		panic(fmt.Sprintf("ParseProgram() error: %v\n", err))
@@ -258,13 +252,23 @@ func Example_complexExpressions() {
 
 func Example_simpleComparison() {
 	input := `let isEqual = a ~~ b; let isNotEqual = c !~ d`
-	l := lexer.New(input)
-	p := parser.New(l)
-	InstallPlugin(p)
+	lb := lexer.NewBuilder()
+	p := parser.NewBuilder(lb).Install(Plugin).Build(input)
 	ast, err := p.ParseProgram()
 	if err != nil {
 		panic(fmt.Sprintf("ParseProgram() error: %v\n", err))
 	}
 	fmt.Println(ast.String())
 	// Output: let isEqual=(a==b);let isNotEqual=(c!=d)
+}
+
+func TestXxx(t *testing.T) {
+	input := `a ~~ b`
+	lb := lexer.NewBuilder()
+	p := parser.NewBuilder(lb).Install(Plugin).Build(input)
+	program, err := p.ParseProgram()
+	if err != nil {
+		t.Errorf("ParseProgram() erro: %v", err)
+	}
+	fmt.Println(program)
 }

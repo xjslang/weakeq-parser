@@ -31,9 +31,10 @@ func (we *WeakEqExpression) WriteTo(b *strings.Builder) {
 	b.WriteRune(')')
 }
 
-func InstallPlugin(p *parser.Parser) {
-	eqTokenType := p.Lexer.RegisterTokenType("weak-eq")
-	p.Lexer.UseTokenReader(func(l *lexer.Lexer, next func() token.Token) token.Token {
+func Plugin(pb *parser.Builder) {
+	lb := pb.LexerBuilder
+	eqTokenType := lb.RegisterTokenType("weak-eq")
+	lb.UseTokenReader(func(l *lexer.Lexer, next func() token.Token) token.Token {
 		switch l.CurrentChar {
 		case '~':
 			if l.PeekChar() == '~' {
@@ -51,7 +52,7 @@ func InstallPlugin(p *parser.Parser) {
 		return next()
 	})
 
-	p.RegisterInfixOperator(eqTokenType, parser.EQUALITY, func(token token.Token, left ast.Expression, right func() ast.Expression) ast.Expression {
+	pb.RegisterInfixOperator(eqTokenType, parser.EQUALITY, func(token token.Token, left ast.Expression, right func() ast.Expression) ast.Expression {
 		return &WeakEqExpression{
 			Token:    token,
 			Left:     left,
