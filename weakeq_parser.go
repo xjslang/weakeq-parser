@@ -52,7 +52,7 @@ func Plugin(pb *parser.Builder) {
 		return next()
 	})
 
-	pb.RegisterInfixOperator(eqTokenType, parser.EQUALITY, func(token token.Token, left ast.Expression, right func() ast.Expression) ast.Expression {
+	pb.UseInfixOperator(eqTokenType, parser.EQUALITY, func(token token.Token, left ast.Expression, right func() ast.Expression) ast.Expression {
 		return &WeakEqExpression{
 			Token:    token,
 			Left:     left,
